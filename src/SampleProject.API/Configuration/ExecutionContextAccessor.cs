@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using SampleProject.API.Configuration.Middlewares;
 using SampleProject.Application.Configuration;
 
 namespace SampleProject.API.Configuration

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using SampleProject.Application.Auths.Login.Dto.Responses;
+using SampleProject.Application.Exceptions;
 using SampleProject.Application.Tokens;
 
 namespace SampleProject.Application.Auths.Login;
@@ -27,24 +27,36 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
 
     public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByNameAsync(request.Username);
+        var user = await GetUserByUsernameOrThrowAsync(request.Username);
 
+        await ValidateUserPasswordAsync(user, request.Password);
+        
+        return new LoginResponse
+        {
+            UserId = user.Id,
+            AccessToken = _jwtGenerator.CreateToken(user)
+        };
+    }
+
+    private async Task<IdentityUser> GetUserByUsernameOrThrowAsync(string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+    
         if (user is null)
         {
-            // TODO кинуть ошибку
+            throw new EntityNotFoundException($"User with username '{username}' was not found");
         }
 
-        var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: false);
+        return user;
+    }
 
-        if (result.Succeeded)
+    private async Task ValidateUserPasswordAsync(IdentityUser user, string password)
+    {
+        var result = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: false);
+
+        if (!result.Succeeded)
         {
-            return new LoginResponse
-            {
-                Username = user.UserName,
-                Token = _jwtGenerator.CreateToken(user)
-            };
+            throw new Exception("Invalid password or login during authorization");
         }
-
-        throw new UnauthorizedAccessException();
     }
 }

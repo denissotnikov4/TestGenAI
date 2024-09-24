@@ -12,6 +12,8 @@ namespace SampleProject.Infrastructure.Security;
 
 public class JwtGenerator : IJwtGenerator
 {
+    private const int TokenExpirationSeconds = 360000;
+    
     private readonly SymmetricSecurityKey _key;
 
     public JwtGenerator(IConfiguration configuration)
@@ -28,7 +30,7 @@ public class JwtGenerator : IJwtGenerator
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(7),
+            Expires = DateTime.Now.AddSeconds(TokenExpirationSeconds),
             SigningCredentials = credentials
         };
         var tokenHandler = new JwtSecurityTokenHandler();

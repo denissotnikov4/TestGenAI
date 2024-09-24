@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace SampleProject.Application.Users.RegisterUser.Dto.Responses;
 
 public record struct RegisterUserResponse
 {
-    public required string Id { get; init; }
+    [JsonPropertyName("userId")]
+    public required string UserId { get; init; }
 
-    public required string Token { get; init; }
+    [JsonPropertyName("accessToken")]
+    public required string AccessToken { get; init; }
 }

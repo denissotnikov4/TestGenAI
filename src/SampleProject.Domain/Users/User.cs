@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using SampleProject.Domain.RefreshTokens;
 using SampleProject.Domain.SeedWork;
-using SampleProject.Domain.Users.Rules;
 
 namespace SampleProject.Domain.Users
 {

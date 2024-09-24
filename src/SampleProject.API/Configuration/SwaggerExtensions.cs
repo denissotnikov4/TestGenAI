@@ -59,7 +59,7 @@ namespace SampleProject.API.Configuration
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sample CQRS API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DataGang Tests API V1");
             });
 
             return app;

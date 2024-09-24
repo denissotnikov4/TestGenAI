@@ -1,8 +1,13 @@
-﻿namespace SampleProject.Application.Auths.Login.Dto.Responses;
+﻿using System;
+using System.Text.Json.Serialization;
+
+namespace SampleProject.Application.Auths.Login.Dto.Responses;
 
 public record struct LoginResponse
 {
-    public required string Username { get; set; }
+    [JsonPropertyName("userId")]
+    public required string UserId { get; set; }
     
-    public required string Token { get; set; }
+    [JsonPropertyName("accessToken")]
+    public required string AccessToken { get; set; }
 }

@@ -8,9 +8,8 @@ namespace SampleProject.API.SeedWork
         public BusinessRuleValidationExceptionProblemDetails(BusinessRuleValidationException exception)
         {
             this.Title = "Business rule validation error";
-            this.Status = StatusCodes.Status409Conflict;
+            this.Status = StatusCodes.Status400BadRequest;
             this.Detail = exception.Details;
-            this.Type = "https://somedomain/business-rule-validation-error";
         }
     }
 }

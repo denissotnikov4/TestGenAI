@@ -8,29 +8,27 @@ using SampleProject.Application.Tokens.CreateToken;
 using SampleProject.Application.Tokens.CreateToken.Dto.Requests;
 using SampleProject.Application.Tokens.CreateToken.Dto.Responses;
 
-namespace SampleProject.API.Tokens;
+namespace SampleProject.API.TestAuthorize;
 
-[Route("api/v1/tokens")]
+[Route("api/v1/test/auth")]
 [ApiVersion("1.0")]
 [ApiController]
-public class TokensController : ControllerBase
+public class TestAuthorizeController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public TokensController(IMediator mediator)
+    public TestAuthorizeController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     /// <summary>
-    /// Create JWT-token
+    /// Test to check the correctness of the authorization
     /// </summary>
     [HttpPost]
-    [ProducesResponseType<CreateTokenResponse>((int)HttpStatusCode.OK)]
     [Authorize]
-    public async Task<IActionResult> CreateToken([FromBody] CreateTokenRequest request)
+    public async Task<IActionResult> TestAuthorize([FromBody] CreateTokenRequest request)
     {
-        var response = await _mediator.Send(new CreateTokenCommand(request.Username, request.Password));
-        return Ok(response);
+        return Ok();
     }
 }

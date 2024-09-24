@@ -17,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SampleProject.API.Configuration;
+using SampleProject.API.Configuration.Middlewares;
 using SampleProject.Application.Configuration.Validation;
 using SampleProject.API.SeedWork;
 using SampleProject.Application.Configuration;
@@ -55,8 +56,9 @@ namespace SampleProject.API
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            var connectionString = _configuration.GetConnectionString("ConnectionString");
             services.AddDbContext<ApplicationContext>(opt =>
-                opt.UseNpgsql(_configuration.GetConnectionString("ConnectionString")));
+                opt.UseNpgsql(connectionString));
             
             var builder = services.AddIdentityCore<IdentityUser>();
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
@@ -101,7 +103,7 @@ namespace SampleProject.API
             var memoryCache = serviceProvider.GetService<IMemoryCache>();
             return ApplicationStartup.Initialize(
                 services, 
-                this._configuration[OrdersConnectionString],
+                connectionString,
                 new MemoryCacheStore(memoryCache, cachingConfiguration),
                 null,
                 emailsSettings,
@@ -122,6 +124,8 @@ namespace SampleProject.API
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 

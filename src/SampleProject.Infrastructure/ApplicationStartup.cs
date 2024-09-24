@@ -3,9 +3,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.CommonServiceLocator;
 using CommonServiceLocator;
-using FluentMigrator.Runner;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Impl;
@@ -13,7 +10,6 @@ using SampleProject.Application.Configuration;
 using SampleProject.Application.Configuration.Emails;
 using SampleProject.Infrastructure.Caching;
 using SampleProject.Infrastructure.Database;
-using SampleProject.Infrastructure.Database.Migrations;
 using SampleProject.Infrastructure.Domain;
 using SampleProject.Infrastructure.Emails;
 using SampleProject.Infrastructure.Logging;
@@ -22,7 +18,6 @@ using SampleProject.Infrastructure.Processing.InternalCommands;
 using SampleProject.Infrastructure.Processing.Outbox;
 using SampleProject.Infrastructure.Quartz;
 using SampleProject.Infrastructure.Security;
-using SampleProject.Infrastructure.SeedWork;
 using Serilog;
 
 namespace SampleProject.Infrastructure
@@ -49,12 +44,6 @@ namespace SampleProject.Infrastructure
                 logger,
                 executionContextAccessor);
 
-            /*using (var scope = serviceProvider.CreateScope())
-            {
-                var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-                migrationRunner.MigrateUp();
-            }*/
-
             return serviceProvider;
         }
 
@@ -66,13 +55,6 @@ namespace SampleProject.Infrastructure
             ILogger logger,
             IExecutionContextAccessor executionContextAccessor)
         {
-            /*services.AddFluentMigratorCore()
-                .ConfigureRunner(rb => rb
-                    .AddPostgres()
-                    .WithGlobalConnectionString(connectionString)
-                    .ScanIn(typeof(InitialMigration).Assembly).For.Migrations())
-                .AddLogging(lb => lb.AddFluentMigratorConsole());*/
-            
             var container = new ContainerBuilder();
 
             container.Populate(services);
@@ -126,16 +108,6 @@ namespace SampleProject.Infrastructure
             container.RegisterModule(new ProcessingModule());
 
             container.RegisterInstance(executionContextAccessor);
-            /*container.Register(c =>
-            {
-                var dbContextOptionsBuilder = new DbContextOptionsBuilder<OrdersContext>();
-                dbContextOptionsBuilder.UseNpgsql(connectionString);
-
-                dbContextOptionsBuilder
-                    .ReplaceService<IValueConverterSelector, StronglyTypedIdValueConverterSelector>();
-                
-                return new OrdersContext(dbContextOptionsBuilder.Options);
-            }).AsSelf().InstancePerLifetimeScope();*/
 
             scheduler.JobFactory = new JobFactory(container.Build());
 
