@@ -27,10 +27,10 @@ namespace SampleProject.Infrastructure.Processing
 
             var mediatrOpenTypes = new[]
             {
-            typeof(IRequestHandler<,>),
-            typeof(INotificationHandler<>),
-            typeof(IValidator<>),
-        };
+                typeof(IRequestHandler<,>),
+                typeof(INotificationHandler<>),
+                typeof(IValidator<>),
+            };
 
             foreach (var mediatrOpenType in mediatrOpenTypes)
             {
@@ -61,15 +61,20 @@ namespace SampleProject.Infrastructure.Processing
             public ScopedContravariantRegistrationSource(params Type[] types)
             {
                 if (types == null)
+                {
                     throw new ArgumentNullException(nameof(types));
+                }
+
                 if (!types.All(x => x.IsGenericTypeDefinition))
+                {
                     throw new ArgumentException("Supplied types should be generic type definitions");
+                }
+                
                 _types.AddRange(types);
             }
 
-            public IEnumerable<IComponentRegistration> RegistrationsFor(
-                Service service,
-                Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            public IEnumerable<IComponentRegistration> RegistrationsFor(Service service,
+                Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
             {
                 var components = _source.RegistrationsFor(service, registrationAccessor);
                 foreach (var c in components)

@@ -17,14 +17,10 @@ namespace SampleProject.Application.Customers.DomainServices
         {
             var connection = this._sqlConnectionFactory.GetOpenConnection();
 
-            const string sql = "SELECT TOP 1 1" +
-                               "FROM [orders].[Customers] AS [Customer] " +
-                               "WHERE [Customer].[Email] = @Email";
-            var customersNumber = connection.QuerySingleOrDefault<int?>(sql,
-                            new
-                            {
-                                Email = customerEmail
-                            });
+            const string sql = "SELECT 1 " +
+                               "FROM \"Orders\".\"Customers\" AS \"Customer\" " +
+                               "WHERE \"Customer\".\"Email\" = @Email";
+            var customersNumber = connection.QuerySingleOrDefault<int?>(sql, new { Email = customerEmail });
 
             return !customersNumber.HasValue;
         }

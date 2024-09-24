@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using Npgsql;
 using SampleProject.Application;
 using SampleProject.Application.Configuration.Data;
 
@@ -20,7 +21,7 @@ namespace SampleProject.Infrastructure.Database
         {
             if (this._connection == null || this._connection.State != ConnectionState.Open)
             {
-                this._connection = new SqlConnection(_connectionString);
+                this._connection = new NpgsqlConnection(_connectionString);
                 this._connection.Open();
             }
 

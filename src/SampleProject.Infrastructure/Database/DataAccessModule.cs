@@ -7,10 +7,12 @@ using SampleProject.Domain.Customers.Orders;
 using SampleProject.Domain.Payments;
 using SampleProject.Domain.Products;
 using SampleProject.Domain.SeedWork;
+using SampleProject.Domain.Users;
 using SampleProject.Infrastructure.Domain;
 using SampleProject.Infrastructure.Domain.Customers;
 using SampleProject.Infrastructure.Domain.Payments;
 using SampleProject.Infrastructure.Domain.Products;
+using SampleProject.Infrastructure.Domain.Users;
 using SampleProject.Infrastructure.SeedWork;
 
 namespace SampleProject.Infrastructure.Database
@@ -48,23 +50,27 @@ namespace SampleProject.Infrastructure.Database
                 .As<IPaymentRepository>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<UserRepository>()
+                .As<IUserRepository>()
+                .InstancePerLifetimeScope();
+
             builder.RegisterType<StronglyTypedIdValueConverterSelector>()
                 .As<IValueConverterSelector>()
                 .SingleInstance();
 
-            builder
+            /*builder
                 .Register(c =>
                 {
                     var dbContextOptionsBuilder = new DbContextOptionsBuilder<OrdersContext>();
-                    dbContextOptionsBuilder.UseSqlServer(_databaseConnectionString);
+                    dbContextOptionsBuilder.UseNpgsql(_databaseConnectionString);
                     dbContextOptionsBuilder
                         .ReplaceService<IValueConverterSelector, StronglyTypedIdValueConverterSelector>();
-
+                    
                     return new OrdersContext(dbContextOptionsBuilder.Options);
                 })
                 .AsSelf()
                 .As<DbContext>()
-                .InstancePerLifetimeScope();
+                .InstancePerLifetimeScope()*/;
         }
     }
 }

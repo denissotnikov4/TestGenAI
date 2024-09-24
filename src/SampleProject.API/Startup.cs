@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using SampleProject.API.Configuration;
 using SampleProject.Application.Configuration.Validation;
 using SampleProject.API.SeedWork;
@@ -16,7 +23,9 @@ using SampleProject.Application.Configuration;
 using SampleProject.Application.Configuration.Emails;
 using SampleProject.Domain.SeedWork;
 using SampleProject.Infrastructure;
+using SampleProject.Infrastructure.Auth;
 using SampleProject.Infrastructure.Caching;
+using SampleProject.Infrastructure.Database;
 using Serilog;
 using Serilog.Formatting.Compact;
 
@@ -27,7 +36,7 @@ namespace SampleProject.API
     {
         private readonly IConfiguration _configuration;
 
-        private const string OrdersConnectionString = "OrdersConnectionString";
+        private const string OrdersConnectionString = "ConnectionString";
 
         private static ILogger _logger;
 
@@ -46,6 +55,29 @@ namespace SampleProject.API
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationContext>(opt =>
+                opt.UseNpgsql(_configuration.GetConnectionString("ConnectionString")));
+            
+            var builder = services.AddIdentityCore<IdentityUser>();
+            var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+
+            identityBuilder.AddEntityFrameworkStores<ApplicationContext>();
+            identityBuilder.AddSignInManager<SignInManager<IdentityUser>>();
+            
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["TokenKey"]));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(
+                    opt =>
+                    {
+                        opt.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = key,
+                            ValidateAudience = false,
+                            ValidateIssuer = false,
+                        };
+                    });
+            
             services.AddControllers();
             
             services.AddMemoryCache();
@@ -58,7 +90,6 @@ namespace SampleProject.API
                 x.Map<BusinessRuleValidationException>(ex => new BusinessRuleValidationExceptionProblemDetails(ex));
             });
             
-
             services.AddHttpContextAccessor();
             var serviceProvider = services.BuildServiceProvider();
 
@@ -75,23 +106,22 @@ namespace SampleProject.API
                 null,
                 emailsSettings,
                 _logger,
-                executionContextAccessor);
+                executionContextAccessor,
+                false);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationContext context)
         {
+            context.Database.Migrate();
+            
             app.UseMiddleware<CorrelationMiddleware>();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseProblemDetails();
-            }
+            app.UseProblemDetails();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 

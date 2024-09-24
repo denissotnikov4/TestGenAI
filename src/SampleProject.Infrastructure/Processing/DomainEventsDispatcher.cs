@@ -17,18 +17,18 @@ namespace SampleProject.Infrastructure.Processing
     {
         private readonly IMediator _mediator;
         private readonly ILifetimeScope _scope;
-        private readonly OrdersContext _ordersContext;
+        /*private readonly OrdersContext _ordersContext;*/
 
-        public DomainEventsDispatcher(IMediator mediator, ILifetimeScope scope, OrdersContext ordersContext)
+        public DomainEventsDispatcher(IMediator mediator, ILifetimeScope scope/*, OrdersContext ordersContext*/)
         {
             this._mediator = mediator;
             this._scope = scope;
-            this._ordersContext = ordersContext;
+            /*this._ordersContext = ordersContext;*/
         }
 
         public async Task DispatchEventsAsync()
         {
-            var domainEntities = this._ordersContext.ChangeTracker
+            /*var domainEntities = this._ordersContext.ChangeTracker
                 .Entries<Entity>()
                 .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any()).ToList();
 
@@ -72,7 +72,7 @@ namespace SampleProject.Infrastructure.Processing
                     type,
                     data);
                 this._ordersContext.OutboxMessages.Add(outboxMessage);
-            }
+            }*/
         }
     }
 }

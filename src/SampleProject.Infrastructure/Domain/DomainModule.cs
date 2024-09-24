@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using SampleProject.Application.Customers.DomainServices;
+using SampleProject.Application.Users.DomainServices;
 using SampleProject.Domain.Customers;
 using SampleProject.Domain.ForeignExchange;
+using SampleProject.Domain.Users;
 using SampleProject.Infrastructure.Domain.ForeignExchanges;
 
 namespace SampleProject.Infrastructure.Domain
@@ -12,6 +14,10 @@ namespace SampleProject.Infrastructure.Domain
         {
             builder.RegisterType<CustomerUniquenessChecker>()
                 .As<ICustomerUniquenessChecker>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<UsernameUniquenessChecker>()
+                .As<IUsernameUniquenessChecker>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<ForeignExchange>()

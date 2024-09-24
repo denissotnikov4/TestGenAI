@@ -15,21 +15,21 @@ namespace SampleProject.Infrastructure.Processing
 
         private readonly IUnitOfWork _unitOfWork;
 
-        private readonly OrdersContext _ordersContext;
+        //private readonly OrdersContext _ordersContext;
 
         public UnitOfWorkCommandHandlerWithResultDecorator(
             ICommandHandler<T, TResult> decorated, 
-            IUnitOfWork unitOfWork, 
-            OrdersContext ordersContext)
+            IUnitOfWork unitOfWork/*, 
+            OrdersContext ordersContext*/)
         {
             _decorated = decorated;
             _unitOfWork = unitOfWork;
-            _ordersContext = ordersContext;
+            //_ordersContext = ordersContext;
         }
 
         public async Task<TResult> Handle(T command, CancellationToken cancellationToken)
         {
-            var result = await this._decorated.Handle(command, cancellationToken);
+            /*var result = await this._decorated.Handle(command, cancellationToken);
 
             if (command is InternalCommandBase<TResult>)
             {
@@ -43,7 +43,9 @@ namespace SampleProject.Infrastructure.Processing
 
             await this._unitOfWork.CommitAsync(cancellationToken);
 
-            return result;
+            return result;*/
+
+            return default;
         }
     }
 }
