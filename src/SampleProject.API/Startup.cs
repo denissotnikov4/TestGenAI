@@ -81,6 +81,15 @@ namespace SampleProject.API
                     });
             
             services.AddControllers();
+
+            services.AddCors(options => options.AddPolicy("CorsPolicy",
+                builder => {
+                    builder.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetIsOriginAllowed(_ => true)
+                        .AllowCredentials();
+                }));
+
             
             services.AddMemoryCache();
 
