@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using SampleProject.Application.Exceptions;
 using SampleProject.Application.Users.Mappings;
 using SampleProject.Application.Users.UpdateUser.Dto.Responses;
 using SampleProject.Domain.Users;
@@ -25,7 +26,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Updat
 
         if (existingUser is null)
         {
-            // TODO кинуть ошибку
+            throw new EntityNotFoundException($"User with id {request.UserId} not found");
         }
 
         existingUser.Username = request.Username;

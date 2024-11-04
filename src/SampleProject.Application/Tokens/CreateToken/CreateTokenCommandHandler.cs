@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using SampleProject.Application.Exceptions;
 using SampleProject.Application.Tokens.CreateToken.Dto.Responses;
 using SampleProject.Domain.Users;
 using SampleProject.Infrastructure.Auth;
@@ -31,13 +32,13 @@ public class CreateTokenCommandHandler : IRequestHandler<CreateTokenCommand, Cre
 
         if (user is null)
         {
-            // TODO кидать ошибку что пользователь не найден
+            throw new EntityNotFoundException($"User with username {request.Username} not found");
         }
 
         if (_passwordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password) 
             == PasswordVerificationResult.Failed)
         {
-            // TODO кидать ошибку что пользователь ввел некорретный пароль
+            throw new InvalidPasswordException($"Invalid password for user {request.Username}");
         }
 
         var claims = new List<Claim>()

@@ -4,8 +4,11 @@ namespace SampleProject.Application.Exceptions.Base;
 
 public abstract class BaseCustomException : Exception
 {
-    public int ErrorCode { get; }
-
+    protected BaseCustomException()
+    {
+        
+    }
+    
     protected BaseCustomException(string message) : base(message)
     {
     }
@@ -13,10 +16,5 @@ public abstract class BaseCustomException : Exception
     protected BaseCustomException(string message, Exception innerException) 
         : base(message, innerException)
     {
-    }
-
-    protected BaseCustomException(string message, int errorCode) : base(message)
-    {
-        ErrorCode = errorCode;
     }
 }

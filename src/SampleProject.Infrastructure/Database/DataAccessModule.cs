@@ -1,14 +1,14 @@
 ﻿using Autofac;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SampleProject.Application;
 using SampleProject.Application.Configuration.Data;
+using SampleProject.Domain.Chats;
 using SampleProject.Domain.Customers.Orders;
 using SampleProject.Domain.Payments;
 using SampleProject.Domain.Products;
 using SampleProject.Domain.SeedWork;
 using SampleProject.Domain.Users;
 using SampleProject.Infrastructure.Domain;
+using SampleProject.Infrastructure.Domain.Chats;
 using SampleProject.Infrastructure.Domain.Customers;
 using SampleProject.Infrastructure.Domain.Payments;
 using SampleProject.Infrastructure.Domain.Products;
@@ -52,6 +52,10 @@ namespace SampleProject.Infrastructure.Database
 
             builder.RegisterType<UserRepository>()
                 .As<IUserRepository>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<ChatRepository>()
+                .As<IChatRepository>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<StronglyTypedIdValueConverterSelector>()

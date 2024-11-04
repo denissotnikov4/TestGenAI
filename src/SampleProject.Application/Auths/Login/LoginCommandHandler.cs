@@ -56,7 +56,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
 
         if (!result.Succeeded)
         {
-            throw new Exception("Invalid password or login during authorization");
+            throw new InvalidPasswordException("Invalid password or login during authorization");
         }
     }
 }
