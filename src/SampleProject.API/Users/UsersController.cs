@@ -44,4 +44,28 @@ public class UsersController : Controller
         var response = await _mediator.Send(new RegisterUserCommand(request.Username, request.Password));
         return Ok(response);
     }
+
+    /// <summary>
+    /// Get user info
+    /// </summary>
+    [Authorize]
+    [HttpGet("{userId:guid}")]
+    [ProducesResponseType<GetUserResponse>((int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetUser([FromRoute] Guid userId)
+    {
+        var response = await _mediator.Send(new GetUserCommand(userId));
+        return Ok(response);
+    }
+
+    /// <summary>
+    /// Update user info
+    /// </summary>
+    [Authorize]
+    [HttpPut("{userId:guid}")]
+    [ProducesResponseType<UpdateUserResponse>((int)HttpStatusCode.OK)]
+    public async Task<IActionResult> UpdateUser([FromRoute] Guid userId, [FromBody] UpdateUserRequest request)
+    {
+        var response = await _mediator.Send(new UpdateUserCommand(userId, request.Username, request.Password, request.Email));
+        return Ok(response);
+    }
 }

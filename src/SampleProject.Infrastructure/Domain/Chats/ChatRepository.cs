@@ -14,7 +14,7 @@ public class ChatRepository : IChatRepository
 
     public ChatRepository(ApplicationContext context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _context = context;
     }
 
     public async Task AddAsync(Chat chat)

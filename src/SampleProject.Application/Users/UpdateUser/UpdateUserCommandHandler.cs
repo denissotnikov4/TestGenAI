@@ -11,25 +11,25 @@ namespace SampleProject.Application.Users.UpdateUser;
 
 public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UpdateUserResponse>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IPasswordHasher<IdentityUser> _passwordHasher;
 
-    public UpdateUserCommandHandler(IUserRepository userRepository, IPasswordHasher<User> passwordHasher)
+    public UpdateUserCommandHandler(IPasswordHasher<IdentityUser> passwordHasher, UserManager<IdentityUser> userManager)
     {
-        _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _userManager = userManager;
     }
 
     public async Task<UpdateUserResponse> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var existingUser = await _userRepository.GetByIdAsync(request.UserId);
+        var existingUser = await _userManager.FindByIdAsync(request.UserId.ToString());
 
         if (existingUser is null)
         {
             throw new EntityNotFoundException($"User with id {request.UserId} not found");
         }
 
-        existingUser.Username = request.Username;
+        existingUser.UserName = request.Username;
         existingUser.Email = request.Email;
 
         if (!string.IsNullOrEmpty(request.Password))
@@ -37,7 +37,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Updat
             existingUser.PasswordHash = _passwordHasher.HashPassword(existingUser, request.Password);
         }
 
-        await _userRepository.UpdateAsync(existingUser);
+        await _userManager.UpdateAsync(existingUser);
 
         return existingUser.ToUpdateUserResponse();
     }

@@ -15,6 +15,8 @@ using SampleProject.Application.Chats.GetChats;
 using SampleProject.Application.Chats.GetChats.Dto.Responses;
 using SampleProject.Application.Chats.UpdateChat;
 using SampleProject.Application.Chats.UpdateChat.Dto.Requests;
+using SampleProject.Application.Messages.GetMessagesByChat;
+using SampleProject.Application.Messages.GetMessagesByChat.Dto.Responses;
 
 namespace SampleProject.API.Chats;
 
@@ -22,11 +24,11 @@ namespace SampleProject.API.Chats;
 [ApiVersion("1.0")]
 [ApiController]
 [Authorize]
-public class ChatsControllers : Controller
+public class ChatController : Controller
 {
     private readonly IMediator _mediator;
 
-    public ChatsControllers(IMediator mediator)
+    public ChatController(IMediator mediator)
     {
         _mediator = mediator;
     }
@@ -50,6 +52,17 @@ public class ChatsControllers : Controller
     public async Task<IActionResult> GetChatById([FromRoute] Guid chatId)
     {
         var response = await _mediator.Send(new GetChatCommand(chatId));
+        return Ok(response);
+    }
+    
+    /// <summary>
+    /// Get messages by chatId
+    /// </summary>
+    [HttpGet("{chatId:guid}/messages")]
+    [ProducesResponseType<GetMessagesByChatResponse>((int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetMessagesByChatId([FromRoute] Guid chatId)
+    {
+        var response = await _mediator.Send(new GetMessagesByChatCommand(chatId));
         return Ok(response);
     }
 

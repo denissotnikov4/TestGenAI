@@ -8,6 +8,7 @@ using Quartz;
 using Quartz.Impl;
 using SampleProject.Application.Configuration;
 using SampleProject.Application.Configuration.Emails;
+using SampleProject.Infrastructure.AIModelsService;
 using SampleProject.Infrastructure.Caching;
 using SampleProject.Infrastructure.Database;
 using SampleProject.Infrastructure.Domain;
@@ -64,6 +65,7 @@ namespace SampleProject.Infrastructure
             container.RegisterModule(new DataAccessModule(connectionString));
             container.RegisterModule(new MediatorModule());
             container.RegisterModule(new DomainModule());
+            container.RegisterModule(new AIModule());
             
             if (emailSender != null)
             {

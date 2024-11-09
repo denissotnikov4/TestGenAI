@@ -5,5 +5,4 @@ namespace SampleProject.Application.Users.GetAllUsers;
 
 public class GetAllUsersCommand : CommandBase<GetAllUsersResponse>
 {
-    
 }

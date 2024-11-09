@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -34,8 +35,9 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         _ruleChecker.CheckRule(new PasswordMustBeComplexRule(request.Password));
 
         await ThrowIfUsernameNonUnique(request.Password);
-
+        
         var user = await RegisterUserAsync(request.Username, request.Password);
+        await _userManager.AddClaimAsync(user, new Claim(nameof(user.Id), user.Id));
         
         return new RegisterUserResponse
         {

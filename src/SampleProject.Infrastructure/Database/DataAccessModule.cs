@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SampleProject.Application.Configuration.Data;
 using SampleProject.Domain.Chats;
 using SampleProject.Domain.Customers.Orders;
+using SampleProject.Domain.Messages;
 using SampleProject.Domain.Payments;
 using SampleProject.Domain.Products;
 using SampleProject.Domain.SeedWork;
@@ -10,6 +11,7 @@ using SampleProject.Domain.Users;
 using SampleProject.Infrastructure.Domain;
 using SampleProject.Infrastructure.Domain.Chats;
 using SampleProject.Infrastructure.Domain.Customers;
+using SampleProject.Infrastructure.Domain.Messages;
 using SampleProject.Infrastructure.Domain.Payments;
 using SampleProject.Infrastructure.Domain.Products;
 using SampleProject.Infrastructure.Domain.Users;
@@ -56,6 +58,10 @@ namespace SampleProject.Infrastructure.Database
 
             builder.RegisterType<ChatRepository>()
                 .As<IChatRepository>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<MessageRepository>()
+                .As<IMessageRepository>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<StronglyTypedIdValueConverterSelector>()

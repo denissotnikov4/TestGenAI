@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
 using SampleProject.Application.Configuration.Data;
+using SampleProject.Application.Exceptions;
 using SampleProject.Domain.Users;
 using SampleProject.Infrastructure.Database;
 
@@ -12,11 +13,13 @@ public class UserRepository : IUserRepository
 {
     private static readonly string TableName = $"{nameof(User).ToLower()}";
     
+    private readonly ApplicationContext _context;
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
-    public UserRepository(ISqlConnectionFactory sqlConnectionFactory)
+    public UserRepository(ISqlConnectionFactory sqlConnectionFactory, ApplicationContext context)
     {
         _sqlConnectionFactory = sqlConnectionFactory;
+        _context = context;
     }
 
     public async Task<Guid> AddAsync(User user)
@@ -36,7 +39,7 @@ public class UserRepository : IUserRepository
                   $"        {DatabaseConstants.ParametersPrefix}{nameof(user.Role)}, " +
                   $"        {DatabaseConstants.ParametersPrefix}{nameof(user.PasswordHash)}, " +
                   $"        {DatabaseConstants.ParametersPrefix}{nameof(user.Email)}, " +
-                  $"        {DatabaseConstants.ParametersPrefix}{nameof(user.CreatedAt)})" +
+                  $"        {DatabaseConstants.ParametersPrefix}{nameof(user.CreatedAt)}) " +
                   $"RETURNING \"{nameof(user.Id)}\"";
         
         var userId = await connection.ExecuteScalarAsync<Guid>(sql, dynamicParameter);

@@ -7,5 +7,5 @@ namespace SampleProject.Application.Chats.GetChats.Dto.Responses;
 public record struct GetChatsResponse
 {
     [JsonPropertyName("chats")]
-    public required List<Chat> Chats { get; init; }
+    public required IEnumerable<Chat> Chats { get; init; }
 }

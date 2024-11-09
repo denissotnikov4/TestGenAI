@@ -6,14 +6,6 @@ namespace SampleProject.Application.Users.UpdateUser;
 
 public class UpdateUserCommand : CommandBase<UpdateUserResponse>
 {
-    public Guid UserId { get; set; }
-
-    public string Username { get; set; }
-
-    public string Password { get; set; }
-
-    public string Email { get; set; }
-
     public UpdateUserCommand(Guid userId, string username, string password, string email)
     {
         UserId = userId;
@@ -21,4 +13,12 @@ public class UpdateUserCommand : CommandBase<UpdateUserResponse>
         Password = password;
         Email = email;
     }
+    
+    public Guid UserId { get; set; }
+
+    public string Username { get; set; }
+    
+    public string Password { get; set; }
+
+    public string Email { get; set; }
 }

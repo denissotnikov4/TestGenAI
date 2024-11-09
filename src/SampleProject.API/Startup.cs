@@ -27,6 +27,7 @@ using SampleProject.Infrastructure;
 using SampleProject.Infrastructure.Auth;
 using SampleProject.Infrastructure.Caching;
 using SampleProject.Infrastructure.Database;
+using SampleProject.Infrastructure.Http.Extensions;
 using Serilog;
 using Serilog.Formatting.Compact;
 
@@ -90,6 +91,7 @@ namespace SampleProject.API
                         .AllowCredentials();
                 }));
 
+            services.AddHttpLogic();
             
             services.AddMemoryCache();
 

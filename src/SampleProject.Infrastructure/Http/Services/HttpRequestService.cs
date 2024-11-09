@@ -50,7 +50,7 @@ internal class HttpRequestService : IHttpRequestService
                     client,
                     await httpRequestMessage.ShallowCloneAsync(),
                     cancellationToken: cancellationToken));
-
+        
         var bodyContent = await GetBodyOfTypeAsync<TResponse>(responseMessage);
 
         return new HttpResponseData<TResponse>

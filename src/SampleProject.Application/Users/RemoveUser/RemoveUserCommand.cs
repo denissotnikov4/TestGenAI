@@ -5,10 +5,10 @@ namespace SampleProject.Application.Users.RemoveUser;
 
 public class RemoveUserCommand : CommandBase
 {
-    public Guid UserId { get; set; }
-
     public RemoveUserCommand(Guid userId)
     {
         UserId = userId;
     }
+    
+    public Guid UserId { get; set; }
 }
