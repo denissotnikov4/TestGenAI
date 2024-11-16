@@ -9,6 +9,7 @@ using SampleProject.Application.Exceptions;
 using SampleProject.Application.Messages.Constants;
 using SampleProject.Application.Messages.Dto;
 using SampleProject.Application.Messages.GenerateAnswer.Dto.Responses;
+using SampleProject.Application.Tokens;
 using SampleProject.Domain.Chats;
 using SampleProject.Domain.Messages;
 using SampleProject.Domain.SeedWork;
@@ -21,17 +22,20 @@ public class GenerateAnswerCommandHandler : IRequestHandler<GenerateAnswerComman
     private readonly IMessageRepository _messageRepository;
     private readonly IChatRepository _chatRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IJwtTokenService _jwtTokenService;
 
     public GenerateAnswerCommandHandler(
         IAiModelService aiModelService, 
         IMessageRepository messageRepository, 
         IChatRepository chatRepository, 
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IJwtTokenService jwtTokenService)
     {
         _aiModelService = aiModelService;
         _messageRepository = messageRepository;
         _chatRepository = chatRepository;
         _unitOfWork = unitOfWork;
+        _jwtTokenService = jwtTokenService;
     }
 
     public async Task<GenerateAnswerResponse> Handle(GenerateAnswerCommand request, CancellationToken cancellationToken)
@@ -39,11 +43,13 @@ public class GenerateAnswerCommandHandler : IRequestHandler<GenerateAnswerComman
         await using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            var existingChat = await _chatRepository.GetByIdAsync(request.ChatId);
-                
+            var currentUserId = _jwtTokenService.GetCurrentUserIdFromJwtToken();
+        
+            var existingChat = await _chatRepository.GetChatByChatIdAndUserId(request.ChatId, currentUserId);
+        
             if (existingChat is null)
             {
-                throw new EntityNotFoundException($"Chat with id '{request.ChatId}' does not exist");
+                throw new EntityNotFoundException($"Chat with id '{request.ChatId}' was not found for user with id '{currentUserId}'");
             }
         
             var messagesByChat = await _messageRepository.GetMessagesByChatIdAsync(request.ChatId);

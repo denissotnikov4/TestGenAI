@@ -7,8 +7,8 @@ public class SecurityModule : Module
 {
     protected override void Load(ContainerBuilder builder)
     {
-        builder.RegisterType<JwtGenerator>()
-            .As<IJwtGenerator>()
+        builder.RegisterType<JwtTokenService>()
+            .As<IJwtTokenService>()
             .InstancePerLifetimeScope();
     }
 }

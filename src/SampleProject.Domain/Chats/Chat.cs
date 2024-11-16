@@ -13,6 +13,8 @@ public class Chat
     
     public DateTime CreatedAt { get; set; }
 
+    public Guid CreatorUserId { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IEnumerable<Message> Messages { get; set; }
 }

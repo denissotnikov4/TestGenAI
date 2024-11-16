@@ -28,13 +28,19 @@ public class ChatRepository : IChatRepository
         return await _context.Chats.FindAsync(chatId);
     }
 
-    public async Task<List<Chat>> GetAllAsync()
+    public async Task<Chat> GetChatByChatIdAndUserId(Guid chatId, Guid userId)
+    {
+        return await _context.Chats.FirstOrDefaultAsync(x => x.ChatId == chatId && x.CreatorUserId == userId);
+    }
+
+    public async Task<List<Chat>> GetChatsByUserId(Guid userId)
     {
         return await _context.Chats
             .OrderBy(x => x.CreatedAt)
+            .Where(x => x.CreatorUserId == userId)
             .ToListAsync();
     }
-
+    
     public async Task UpdateAsync(Chat chat)
     {
         var existingChat = await _context.Chats.FindAsync(chat.ChatId);

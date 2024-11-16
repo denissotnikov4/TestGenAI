@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,10 +7,10 @@ namespace SampleProject.Domain.Chats;
 public interface IChatRepository
 {
     Task AddAsync(Chat chat);
-    
-    Task<Chat> GetByIdAsync(Guid chatId);
-    
-    Task<List<Chat>> GetAllAsync();
+
+    Task<Chat> GetChatByChatIdAndUserId(Guid chatId, Guid userId);
+
+    Task<List<Chat>> GetChatsByUserId(Guid userId);
     
     Task UpdateAsync(Chat chat);
     

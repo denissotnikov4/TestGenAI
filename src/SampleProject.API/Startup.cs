@@ -83,6 +83,8 @@ namespace SampleProject.API
             
             services.AddControllers();
 
+            services.AddHttpContextAccessor();
+
             services.AddCors(options => options.AddPolicy("CorsPolicy",
                 builder => {
                     builder.AllowAnyHeader()

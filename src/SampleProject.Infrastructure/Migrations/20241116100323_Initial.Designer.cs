@@ -12,7 +12,7 @@ using SampleProject.Infrastructure.Database;
 namespace SampleProject.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20241106185537_Initial")]
+    [Migration("20241116100323_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -229,6 +229,9 @@ namespace SampleProject.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatorUserId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");

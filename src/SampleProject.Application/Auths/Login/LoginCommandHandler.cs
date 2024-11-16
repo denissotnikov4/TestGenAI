@@ -13,16 +13,16 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly IJwtGenerator _jwtGenerator;
+    private readonly IJwtTokenService _jwtTokenService;
 
     public LoginCommandHandler(
         UserManager<IdentityUser> userManager, 
         SignInManager<IdentityUser> signInManager, 
-        IJwtGenerator jwtGenerator)
+        IJwtTokenService jwtTokenService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _jwtGenerator = jwtGenerator;
+        _jwtTokenService = jwtTokenService;
     }
 
     public async Task<LoginResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -34,7 +34,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponse>
         return new LoginResponse
         {
             UserId = user.Id,
-            AccessToken = _jwtGenerator.CreateToken(user)
+            AccessToken = _jwtTokenService.CreateToken(user)
         };
     }
 

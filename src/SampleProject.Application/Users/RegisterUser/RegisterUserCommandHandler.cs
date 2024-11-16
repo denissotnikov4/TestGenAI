@@ -18,16 +18,16 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
 {
     private readonly IRuleChecker _ruleChecker;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly IJwtGenerator _jwtGenerator;
+    private readonly IJwtTokenService _jwtTokenService;
 
     public RegisterUserCommandHandler(
         IRuleChecker ruleChecker, 
         UserManager<IdentityUser> userManager, 
-        IJwtGenerator jwtGenerator)
+        IJwtTokenService jwtTokenService)
     {
         _ruleChecker = ruleChecker;
         _userManager = userManager;
-        _jwtGenerator = jwtGenerator;
+        _jwtTokenService = jwtTokenService;
     }
 
     public async Task<RegisterUserResponse> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         return new RegisterUserResponse
         {
             UserId = user.Id,
-            AccessToken = _jwtGenerator.CreateToken(user)
+            AccessToken = _jwtTokenService.CreateToken(user)
         };
     }
 
