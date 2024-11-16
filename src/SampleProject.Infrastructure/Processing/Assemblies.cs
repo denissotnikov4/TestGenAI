@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
-using SampleProject.Application.Orders.PlaceCustomerOrder;
+using SampleProject.Application.Auths.Login;
 
 namespace SampleProject.Infrastructure.Processing
 {
     internal static class Assemblies
     {
-        public static readonly Assembly Application = typeof(PlaceCustomerOrderCommand).Assembly;
+        public static readonly Assembly Application = typeof(LoginCommand).Assembly;
     }
 }

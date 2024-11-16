@@ -7,7 +7,6 @@ using SampleProject.Application.Configuration.Commands;
 using SampleProject.Application.Configuration.DomainEvents;
 using SampleProject.Application.Configuration.Processing;
 using SampleProject.Application.Configuration.Rule;
-using SampleProject.Application.Payments;
 using SampleProject.Domain.Users;
 using SampleProject.Infrastructure.Logging;
 using SampleProject.Infrastructure.Processing.InternalCommands;
@@ -29,9 +28,6 @@ namespace SampleProject.Infrastructure.Processing
             builder.RegisterType<DomainEventsDispatcher>()
                 .As<IDomainEventsDispatcher>()
                 .InstancePerLifetimeScope();
-
-            builder.RegisterAssemblyTypes(typeof(PaymentCreatedNotification).GetTypeInfo().Assembly)
-                .AsClosedTypesOf(typeof(IDomainEventNotification<>)).InstancePerDependency();
 
             builder.RegisterGenericDecorator(
                 typeof(DomainEventsDispatcherNotificationHandlerDecorator<>), 
