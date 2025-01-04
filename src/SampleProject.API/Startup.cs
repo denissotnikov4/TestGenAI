@@ -134,6 +134,8 @@ namespace SampleProject.API
             app.UseProblemDetails();
 
             app.UseRouting();
+            
+            app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
